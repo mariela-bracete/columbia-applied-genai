@@ -1,7 +1,7 @@
 [project]
 name = "gentext-app"
 version = "0.1.0"
-description = "Add your description here"
+description = "description = FastAPI Dockerized NLP application with spaCy embeddings"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
