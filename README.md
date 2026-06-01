@@ -8,6 +8,24 @@ This project is a FastAPI application containerized with Docker.
 * spaCy word embedding endpoint
 * Dockerized deployment
 
+### Example Embedding Request
+
+POST `/embedding`
+
+```json
+{
+  "word": "queen"
+}```
+
+### Example Response
+
+```json
+{
+  "word": "queen",
+  "embedding": [...]
+}
+```
+
 ## Run Locally
 
 ### Build Docker image
