@@ -1,23 +1,36 @@
 # CNN Image Classification API with FastAPI
 
-A Dockerized FastAPI application exposing multiple machine learning capabilities through REST APIs.
+A Dockerized REST API built with FastAPI that provides:
+
+- CNN-based image classification trained on CIFAR-10
+- Bigram text generation
+- Word embeddings using spaCy
+- Interactive API documentation via Swagger/OpenAPI
+
+Built as part of Columbia University's Applied Generative AI coursework.
 
 ## Features
 
-### Text Generation
-- Bigram language model endpoint
-- Generates text continuations from a seed prompt
+### REST API Endpoints
 
-### Word Embeddings
-- spaCy-based embedding endpoint
-- Returns vector representations of text
+- `/generate` – Bigram text generation
+- `/embedding` – Text embeddings using spaCy
+- `/classify-image` – CNN image classification
 
 ### Image Classification
-- CNN image classifier trained on the CIFAR-10 dataset
-- Supports image upload through FastAPI
-- Returns predicted class and confidence score
+
+- Convolutional Neural Network (CNN) trained on CIFAR-10
+- PyTorch model persistence (`.pth`)
+- Image upload and prediction via REST API
+- Confidence score returned with prediction
 
 **Supported classes:** airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck
+
+### Deployment
+
+- Dockerized application
+- FastAPI + Uvicorn server
+- Swagger/OpenAPI documentation## Features
 
 ## API Documentation
 
