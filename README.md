@@ -69,6 +69,25 @@ POST `/embedding`
 }
 ```
 
+### Example Embedding Request
+
+POST `/embedding`
+
+```json
+{
+  "word": "queen"
+}
+```
+
+### Example Response
+
+```json
+{
+  "word": "queen",
+  "embedding": [...]
+}
+```
+
 ## Run Locally
 
 ### Build Docker Image
