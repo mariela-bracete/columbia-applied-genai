@@ -16,5 +16,8 @@ COPY pyproject.toml uv.lock /code/
 RUN uv sync --frozen
 # Copy the application code
 COPY ./app /code/app
+# Copy helper library and training script
+COPY ./helper_lib /code/helper_lib
+COPY ./train_cnn.py /code/train_cnn.py
 # Command to run the application
 CMD ["uv", "run", "fastapi", "run", "app/main.py", "--port", "80"]

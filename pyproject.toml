@@ -1,14 +1,17 @@
 [project]
 name = "gentext-app"
 version = "0.1.0"
-description = "Add your description here"
+description = "FastAPI Dockerized NLP application with spaCy embeddings"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "en-core-web-md",
     "fastapi[standard]>=0.136.3",
     "pydantic>=2.13.4",
+    "python-multipart>=0.0.30",
     "spacy>=3.8.14",
+    "torch>=2.12.1",
+    "torchvision>=0.27.1",
     "uvicorn>=0.48.0",
 ]
 

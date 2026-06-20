@@ -1,31 +1,98 @@
-# FastAPI Docker NLP App
+# CNN Image Classification API with FastAPI
 
-This project is a FastAPI application containerized with Docker.
+A Dockerized FastAPI application exposing multiple machine learning capabilities through REST APIs.
 
 ## Features
 
-* Bigram text generation endpoint
-* spaCy word embedding endpoint
-* Dockerized deployment
+### Text Generation
+- Bigram language model endpoint
+- Generates text continuations from a seed prompt
+
+### Word Embeddings
+- spaCy-based embedding endpoint
+- Returns vector representations of text
+
+### Image Classification
+- CNN image classifier trained on the CIFAR-10 dataset
+- Supports image upload through FastAPI
+- Returns predicted class and confidence score
+
+**Supported classes:** airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck
+
+## API Documentation
+
+Interactive Swagger UI available through FastAPI.
+
+## Containerization
+
+Application is fully containerized using Docker for consistent deployment.
+
+## Project Structure
+
+```text
+app/
+├── main.py
+├── bigram_model.py
+├── cnn_model.py
+├── image_classifier.py
+├── models/
+│   └── cnn_cifar10.pth
+
+helper_lib/
+├── checkpoints.py
+├── data_loader.py
+├── evaluator.py
+├── model.py
+├── trainer.py
+└── utils.py
+
+train_cnn.py
+Dockerfile
+```
+
+### Example Embedding Request
+
+POST `/embedding`
+
+```json
+{
+  "word": "queen"
+}
+```
+
+### Example Response
+
+```json
+{
+  "word": "queen",
+  "embedding": [...]
+}
+```
 
 ## Run Locally
 
-### Build Docker image
+### Build Docker Image
 
 ```bash
-docker build -t gentext-app .
+docker build -t fastapi-ml-api .
 ```
 
 ### Run Container
 
 ```bash
-docker run -p 8000:80 gentext-app
+docker run -p 8000:80 fastapi-ml-api
 ```
 
-### Open API docs
+### Open API Documentation
 
-http://127.0.0.1:8000/docs
+http://localhost:8000/docs
 
+## Technologies Used
 
-
-
+- Python
+- FastAPI
+- PyTorch
+- torchvision
+- spaCy
+- Docker
+- Uvicorn
