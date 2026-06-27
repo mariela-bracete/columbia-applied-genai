@@ -1,4 +1,5 @@
 import torch
+import os
 from tqdm import tqdm
 from .checkpoints import save_checkpoint
 
@@ -143,3 +144,89 @@ def _evaluate_during_training(model, data_loader, criterion, device):
     accuracy = 100 * correct / total
 
     return avg_loss, accuracy
+
+def train_wgan(
+    generator,
+    critic,
+    dataloader,
+    opt_gen,
+    opt_critic,
+    device="cpu",
+    z_dim=100,
+    epochs=1,
+    n_critic=5,
+    clip_value=0.01,
+    checkpoint_dir="checkpoints/gan",
+    model_prefix="wgan",
+):
+    datalogs = []
+
+    generator.to(device)
+    critic.to(device)
+
+    for epoch in range(epochs):
+        train_loader_with_progress = tqdm(
+            iterable=dataloader,
+            ncols=120,
+            desc=f"Epoch {epoch + 1}/{epochs}",
+        )
+
+        for batch_number, (real, _) in enumerate(train_loader_with_progress):
+            real = real.to(device)
+            batch_size = real.size(0)
+
+            # Train Critic
+            for _ in range(n_critic):
+                noise = torch.randn(batch_size, z_dim, 1, 1).to(device)
+                fake = generator(noise).detach()
+
+                critic_real = critic(real).mean()
+                critic_fake = critic(fake).mean()
+                loss_critic = -(critic_real - critic_fake)
+
+                critic.zero_grad()
+                loss_critic.backward()
+                opt_critic.step()
+
+                for p in critic.parameters():
+                    p.data.clamp_(-clip_value, clip_value)
+
+            # Train Generator
+            noise = torch.randn(batch_size, z_dim, 1, 1).to(device)
+            fake = generator(noise)
+            loss_gen = -critic(fake).mean()
+
+            generator.zero_grad()
+            loss_gen.backward()
+            opt_gen.step()
+
+            if batch_number % 100 == 0:
+                train_loader_with_progress.set_postfix(
+                    {
+                        "Batch": f"{batch_number}/{len(dataloader)}",
+                        "D loss": f"{loss_critic.item():.4f}",
+                        "G loss": f"{loss_gen.item():.4f}",
+                    }
+                )
+
+                datalogs.append(
+                    {
+                        "epoch": epoch + batch_number / len(dataloader),
+                        "batch": batch_number / len(dataloader),
+                        "critic_loss": loss_critic.item(),
+                        "generator_loss": loss_gen.item(),
+                    }
+                )
+
+        os.makedirs(checkpoint_dir, exist_ok=True)
+
+    generator_path = os.path.join(checkpoint_dir, f"{model_prefix}_generator.pt")
+    critic_path = os.path.join(checkpoint_dir, f"{model_prefix}_critic.pt")
+
+    torch.save(generator.state_dict(), generator_path)
+    torch.save(critic.state_dict(), critic_path)
+
+    print(f"Generator saved to: {generator_path}")
+    print(f"Critic saved to: {critic_path}")
+    
+    return generator, critic, datalogs

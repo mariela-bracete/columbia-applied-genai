@@ -6,6 +6,7 @@ from PIL import Image
 from io import BytesIO
 from app.image_classifier import classify_image
 import spacy
+from app.mnist_gan import generate_mnist_digit
 
 app = FastAPI()
 nlp = spacy.load("en_core_web_md")
@@ -71,3 +72,19 @@ async def classify_uploaded_image(file: UploadFile = File(...)):
         "predicted_class": prediction["predicted_class"],
         "confidence": prediction["confidence"],
     }
+
+from fastapi.responses import Response
+
+@app.post(
+    "/generate-mnist-digit",
+    response_class=Response,
+    responses={
+        200: {
+            "content": {
+                "image/png": {}
+            }
+        }
+    }
+)
+async def generate_mnist_digit_endpoint():
+    return generate_mnist_digit()
