@@ -178,19 +178,14 @@ class MNISTCritic(nn.Module):
         self.batchnorm2 = nn.BatchNorm2d(128)
         self.act2 = nn.LeakyReLU(0.2, inplace=True)
 
-        self.conv3 = nn.Conv2d(128, 256, kernel_size=4, stride=2, padding=1, bias=False)
-        self.batchnorm3 = nn.BatchNorm2d(256)
-        self.act3 = nn.LeakyReLU(0.2, inplace=True)
-
-        self.conv4 = nn.Conv2d(256, 1, kernel_size=3, stride=1, padding=0, bias=False)
         self.flatten = nn.Flatten()
+        self.fc = nn.Linear(128 * 7 * 7, 1)
 
     def forward(self, x):
         x = self.act1(self.conv1(x))
         x = self.act2(self.batchnorm2(self.conv2(x)))
-        x = self.act3(self.batchnorm3(self.conv3(x)))
-        x = self.conv4(x)
         x = self.flatten(x)
+        x = self.fc(x)
         return x
 
 
@@ -200,33 +195,25 @@ class MNISTGenerator(nn.Module):
 
         self.z_dim = z_dim
 
-        self.fc = nn.Linear(z_dim, 256 * 7 * 7)
+        self.fc = nn.Linear(z_dim, 128 * 7 * 7)
 
-        self.deconv1 = nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1, bias=False)
-        self.batchnorm1 = nn.BatchNorm2d(128)
+        self.deconv1 = nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1, bias=False)
+        self.batchnorm1 = nn.BatchNorm2d(64)
         self.act1 = nn.ReLU(True)
 
-        self.deconv2 = nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1, bias=False)
-        self.batchnorm2 = nn.BatchNorm2d(64)
-        self.act2 = nn.ReLU(True)
-
-        self.conv_out = nn.Conv2d(64, 1, kernel_size=3, stride=1, padding=1)
+        self.deconv2 = nn.ConvTranspose2d(64, 1, kernel_size=4, stride=2, padding=1)
         self.tanh = nn.Tanh()
 
     def forward(self, x):
         x = x.view(x.size(0), self.z_dim)
         x = self.fc(x)
-        x = x.view(x.size(0), 256, 7, 7)
+        x = x.view(x.size(0), 128, 7, 7)
 
         x = self.deconv1(x)
         x = self.batchnorm1(x)
         x = self.act1(x)
 
         x = self.deconv2(x)
-        x = self.batchnorm2(x)
-        x = self.act2(x)
-
-        x = self.conv_out(x)
         x = self.tanh(x)
 
         return x
