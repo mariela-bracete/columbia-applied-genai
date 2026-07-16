@@ -109,3 +109,42 @@ def get_mnist_gan_data_loader(
     )
 
     return loader
+
+# ---------------------------
+# Assignment 4 - CIFAR-10 Generative Models
+# ---------------------------
+
+def get_cifar10_generative_data_loader(
+    data_dir="./data",
+    batch_size=128,
+    train=True,
+):
+    """
+    Load CIFAR-10 images normalized from [0, 1] to [-1, 1].
+
+    This loader is used for the Energy Model and Diffusion Model.
+    """
+
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=(0.5, 0.5, 0.5),
+            std=(0.5, 0.5, 0.5),
+        ),
+    ])
+
+    dataset = datasets.CIFAR10(
+        root=data_dir,
+        train=train,
+        download=True,
+        transform=transform,
+    )
+
+    loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=train,
+        num_workers=0,
+    )
+
+    return loader

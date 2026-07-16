@@ -1,12 +1,17 @@
-from typing import Union
-from fastapi import FastAPI, File, UploadFile
-from pydantic import BaseModel
-from app.bigram_model import BigramModel
-from PIL import Image
 from io import BytesIO
-from app.image_classifier import classify_image
+from typing import Union
+
 import spacy
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import Response
+from PIL import Image
+from pydantic import BaseModel
+
+from app.bigram_model import BigramModel
+from app.energy_model import generate_energy_image
+from app.image_classifier import classify_image
 from app.mnist_gan import generate_mnist_digit
+from app.diffusion import generate_diffusion_image
 
 app = FastAPI()
 nlp = spacy.load("en_core_web_md")
@@ -44,6 +49,37 @@ def generate_text(request: TextGenerationRequest):
 
     return {"generated_text": generated_text}
 
+@app.post(
+    "/generate-energy-image",
+    response_class=Response,
+    responses={
+        200: {
+            "content": {
+                "image/png": {}
+            }
+        }
+    },
+)
+async def generate_energy_image_endpoint():
+    return generate_energy_image()
+
+@app.post(
+    "/generate-diffusion-image",
+    response_class=Response,
+    responses={
+        200: {
+            "content": {
+                "image/png": {}
+            }
+        }
+    },
+)
+async def generate_diffusion_image_endpoint():
+    return Response(
+        content=generate_diffusion_image(),
+        media_type="image/png",
+    )
+
 @app.post("/embedding")
 def get_embedding(request: EmbeddingRequest):
     token = nlp(request.word)
@@ -72,8 +108,6 @@ async def classify_uploaded_image(file: UploadFile = File(...)):
         "predicted_class": prediction["predicted_class"],
         "confidence": prediction["confidence"],
     }
-
-from fastapi.responses import Response
 
 @app.post(
     "/generate-mnist-digit",
