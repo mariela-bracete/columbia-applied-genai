@@ -12,6 +12,7 @@ from app.energy_model import generate_energy_image
 from app.image_classifier import classify_image
 from app.mnist_gan import generate_mnist_digit
 from app.diffusion import generate_diffusion_image
+from app.llm_model import generate_with_llm
 
 app = FastAPI()
 nlp = spacy.load("en_core_web_md")
@@ -34,6 +35,10 @@ class TextGenerationRequest(BaseModel):
     start_word: str
     length: int
 
+class LLMGenerationRequest(BaseModel):
+    prompt: str
+    max_new_tokens: int = 100
+    temperature: float = 0.7
 
 @app.get("/")
 def read_root():
@@ -45,6 +50,16 @@ def generate_text(request: TextGenerationRequest):
     generated_text = bigram_model.generate_text(
         request.start_word,
         request.length
+    )
+
+    return {"generated_text": generated_text}
+
+@app.post("/generate_with_llm")
+def generate_with_llm_endpoint(request: LLMGenerationRequest):
+    generated_text = generate_with_llm(
+        prompt=request.prompt,
+        max_new_tokens=request.max_new_tokens,
+        temperature=request.temperature,
     )
 
     return {"generated_text": generated_text}

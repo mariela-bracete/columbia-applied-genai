@@ -13,3 +13,4 @@ checkpoints/
 __pycache__/
 *.pyc
 .DS_Store
+app/models/gpt2_qa/training_output/

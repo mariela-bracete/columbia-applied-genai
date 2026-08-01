@@ -1,0 +1,2 @@
+app/models/gpt2_qa/model.safetensors filter=lfs diff=lfs merge=lfs -text
+app/models/gpt2_rl/model.safetensors filter=lfs diff=lfs merge=lfs -text

@@ -2,13 +2,13 @@
 
 A Dockerized REST API built with **FastAPI** that exposes multiple machine learning and generative AI models through a unified HTTP interface.
 
-Developed as part of Columbia University's **Applied Generative AI** coursework, this project combines natural language processing, computer vision, generative adversarial networks (GANs), Energy-Based Models (EBMs), and Diffusion Models into a single deployable application.
+Developed as part of Columbia University's **Applied Generative AI** coursework, this project combines classical natural language processing, transformer-based language models, computer vision, generative adversarial networks (GANs), Energy-Based Models (EBMs), Diffusion Models, and reinforcement learning into a single deployable FastAPI application.
 
 ---
 
 # Features
 
-The API currently supports six AI capabilities:
+The API currently supports seven AI capabilities:
 
 - Bigram text generation
 - Word embeddings using spaCy
@@ -16,6 +16,7 @@ The API currently supports six AI capabilities:
 - MNIST handwritten digit generation using a Wasserstein GAN (WGAN)
 - CIFAR-10 image generation using an Energy-Based Model (EBM)
 - CIFAR-10 image generation using a Diffusion Model
+- GPT-2 question answering using supervised fine-tuning followed by reinforcement learning post-training
 
 Interactive API documentation is automatically available through Swagger/OpenAPI.
 
@@ -31,6 +32,7 @@ Interactive API documentation is automatically available through Swagger/OpenAPI
 | `POST /generate-mnist-digit` | Generate a handwritten MNIST digit using the trained WGAN |
 | `POST /generate-energy-image` | Generate a CIFAR-10 style image using an Energy-Based Model |
 | `POST /generate-diffusion-image` | Generate a CIFAR-10 style image using a Diffusion Model |
+| `POST /generate_with_llm` | Generate a question-answer response using the RL-post-trained GPT-2 language model |
 
 ---
 
@@ -129,7 +131,7 @@ returns a synthesized CIFAR-10 style image generated through energy minimization
 
 # Diffusion Model
 
-The project also includes a Denoising Diffusion Model trained on CIFAR-10.
+The project includes a Denoising Diffusion Model trained on CIFAR-10.
 
 Features include:
 
@@ -148,6 +150,29 @@ returns a synthesized CIFAR-10 style image generated through iterative denoising
 
 ---
 
+# GPT-2 Language Model with Reinforcement Learning
+
+The project includes a GPT-2 language model that is first supervised fine-tuned on a question-answering dataset and then post-trained using reinforcement learning to encourage responses that follow a desired conversational format through reward-based optimization.
+
+Features include:
+
+- Supervised fine-tuning using Hugging Face Transformers
+- LoRA parameter-efficient fine-tuning
+- Reinforcement learning (RL) post-training
+- Custom reward function
+- Model checkpointing
+- FastAPI REST endpoint
+
+Calling
+
+```
+POST /generate_with_llm
+```
+
+returns a generated response from the RL-post-trained GPT-2 model.
+
+---
+
 # Project Structure
 
 ```text
@@ -156,13 +181,16 @@ app/
 ├── main.py
 ├── bigram_model.py
 ├── cnn_model.py
-├── image_classifier.py
-├── mnist_gan.py
-├── energy_model.py
 ├── diffusion.py
+├── energy_model.py
+├── image_classifier.py
+├── llm_model.py
+├── mnist_gan.py
 ├── models/
 │   ├── cnn_cifar10.pth
-│   └── mnist_wgan_generator.pt
+│   ├── mnist_wgan_generator.pt
+│   ├── gpt2_qa/
+│   └── gpt2_rl/
 
 helper_lib/
 ├── checkpoints.py
@@ -175,14 +203,17 @@ helper_lib/
 
 checkpoints/
 ├── cnn/
-├── mnist_gan/
+├── diffusion/
 ├── energy/
-└── diffusion/
+└── mnist_gan/
 
 train_cnn.py
-train_mnist_gan.py
-train_energy.py
 train_diffusion.py
+train_energy.py
+train_llm.py
+train_mnist_gan.py
+train_rl.py
+rl_training_rewards.png
 
 Dockerfile
 README.md
@@ -204,6 +235,8 @@ docker build -t genai-api .
 docker run -p 8000:80 genai-api
 ```
 
+The container includes all trained models, including the RL-post-trained GPT-2 model used by the `/generate_with_llm` endpoint.
+
 Once the container is running, open
 
 ```
@@ -219,6 +252,8 @@ to access the interactive Swagger UI.
 - Python
 - FastAPI
 - PyTorch
+- Hugging Face Transformers
+- PEFT (LoRA)
 - torchvision
 - spaCy
 - NumPy
@@ -238,6 +273,7 @@ to access the interactive Swagger UI.
 | Wasserstein GAN | MNIST | Digit generation |
 | Energy-Based Model | CIFAR-10 | Image generation |
 | Diffusion Model | CIFAR-10 | Image generation |
+| GPT-2 (SFT + RL Post-Training) | Question-answering dataset | Question answering / text generation |
 
 ---
 
@@ -247,6 +283,13 @@ Install dependencies
 
 ```bash
 uv sync
+```
+
+Train the GPT-2 language model (optional if training from scratch)
+
+```bash
+uv run python train_llm.py
+uv run python train_rl.py
 ```
 
 Start the API
