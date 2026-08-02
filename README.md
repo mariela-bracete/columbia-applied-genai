@@ -60,7 +60,7 @@ The `/embedding` endpoint returns dense semantic vector representations using pr
 
 The `/classify-image` endpoint predicts the CIFAR-10 class of an uploaded image and returns both the predicted label and confidence score.
 
-![CNN Classification](assets/02_image_classification_example.png)
+![CNN Classification](assets/02_image_classification_airplane.png)
 
 ---
 
