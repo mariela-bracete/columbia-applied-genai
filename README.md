@@ -36,6 +36,74 @@ Interactive API documentation is automatically available through Swagger/OpenAPI
 
 ---
 
+# Results
+
+The following screenshots illustrate the functionality of each model exposed through the FastAPI application.
+
+## FastAPI Swagger UI
+
+The API provides an interactive Swagger/OpenAPI interface that allows each endpoint to be tested directly from the browser.
+
+![FastAPI Swagger UI](assets/00_FastAPI_Swagger_UI.png)
+
+---
+
+## Word Embeddings
+
+The `/embedding` endpoint returns dense semantic vector representations using pretrained spaCy embeddings.
+
+![Word Embeddings](assets/01_word_embeddings.png)
+
+---
+
+## CNN Image Classification
+
+The `/classify-image` endpoint predicts the CIFAR-10 class of an uploaded image and returns both the predicted label and confidence score.
+
+![CNN Classification](assets/02_image_classification_example.png)
+
+---
+
+## Wasserstein GAN (MNIST)
+
+The `/generate-mnist-digit` endpoint generates new handwritten digits learned from the MNIST dataset.
+
+![WGAN MNIST Generation](assets/03_wgan_mnist_generation.png)
+
+---
+
+## Energy-Based Model
+
+The `/generate-energy-image` endpoint synthesizes CIFAR-10 style images using Langevin Dynamics sampling.
+
+![Energy-Based Model](assets/04_energy_based_generation.png)
+
+---
+
+## Diffusion Model
+
+The `/generate-diffusion-image` endpoint produces CIFAR-10 style images using an iterative denoising diffusion process.
+
+![Diffusion Model](assets/05_diffusion_image_generation.png)
+
+---
+
+## GPT-2 Language Model (Supervised Fine-Tuning + Reinforcement Learning)
+
+The `/generate_with_llm` endpoint generates responses using a GPT-2 model that was first supervised fine-tuned and then post-trained using reinforcement learning with a custom reward function encouraging a consistent response format.
+
+![GPT-2 RL Response](assets/06_gpt_rl_text_generation.png)
+
+---
+
+## Reinforcement Learning Training
+
+The figure below shows the average reward obtained during reinforcement learning post-training. The increasing reward demonstrates that the model successfully learned to maximize the specified reward function while preserving coherent text generation.
+
+![RL Training Rewards](rl_training_rewards.png)
+
+---
+
 # Bigram Language Model
 
 The project includes a simple statistical language model capable of generating text based on learned bigram probabilities.
