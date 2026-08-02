@@ -275,6 +275,15 @@ checkpoints/
 ├── energy/
 └── mnist_gan/
 
+assets/
+├── 00_FastAPI_Swagger_UI.png
+├── 01_word_embeddings.png
+├── 02_image_classification_airplane.png
+├── 03_wgan_mnist_generation.png
+├── 04_energy_based_generation.png
+├── 05_diffusion_image_generation.png
+└── 06_gpt_rl_text_generation.png
+
 train_cnn.py
 train_diffusion.py
 train_energy.py
